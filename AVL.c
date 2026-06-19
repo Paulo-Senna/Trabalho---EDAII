@@ -19,7 +19,7 @@ int max(int a, int b){
 
 int altura(nodoAVL *sub){
     
-	if(subarvore == NULL){
+	if(sub == NULL){
         return -1;
     }else{
         return sub->alt;
