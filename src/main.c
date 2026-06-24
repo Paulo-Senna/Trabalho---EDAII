@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "arvores.h"
+#include "../include/arvores.h"
 
 /* Definicao do contador global usado por avl.c, rubro_negra.c e arv_b.c */
 long long contador_ops = 0;
