@@ -3,14 +3,12 @@
 #include "../include/arv_b.h"
 #include "../include/arvores.h"
 
-/* ---------- alocacao interna ---------- */
-
 static BNodo *bn_novo(int t, int folha) {
-    BNodo *x  = (BNodo *)malloc(sizeof(BNodo));
+    BNodo *x = (BNodo *)malloc(sizeof(BNodo));
     x->chaves = (int *)malloc(2 * t * sizeof(int));
     x->filhos = (BNodo **)malloc((2 * t + 1) * sizeof(BNodo *));
-    x->n      = 0;
-    x->folha  = folha;
+    x->n = 0;
+    x->folha = folha;
     return x;
 }
 
@@ -20,24 +18,20 @@ static void bn_liberar(BNodo *x) {
     free(x);
 }
 
-/* ---------- criacao ---------- */
-
 BArvore *b_criar(int t) {
     if (t < 1) t = 1;
     BArvore *bt = (BArvore *)malloc(sizeof(BArvore));
-    bt->t       = t;
-    bt->raiz    = bn_novo(t, 1);
+    bt->t = t;
+    bt->raiz = bn_novo(t, 1);
     return bt;
 }
 
-/* ---------- insercao ---------- */
-
 static void dividir_filho(BArvore *bt, BNodo *x, int i) {
-    contador_ops++;                          /* split */
-    int t    = bt->t;
+    contador_ops++; //split
+    int t = bt->t;
     BNodo *y = x->filhos[i];
     BNodo *z = bn_novo(t, y->folha);
-    int mid  = (y->n - 1) / 2;
+    int mid = (y->n - 1) / 2;
 
     z->n = y->n - mid - 1;
     for (int j = 0; j < z->n; j++)      z->chaves[j] = y->chaves[mid + 1 + j];
@@ -57,17 +51,17 @@ static void inserir_nao_cheio(BArvore *bt, BNodo *x, int chave) {
     int i = x->n - 1;
     if (x->folha) {
         while (i >= 0 && chave < x->chaves[i]) {
-            contador_ops++;                  /* comparacao de chave */
+            contador_ops++; // comparacao
             x->chaves[i + 1] = x->chaves[i];
             i--;
         }
-        contador_ops++;                      /* comparacao que encerrou o while */
+        contador_ops++; // comparacao final do while
         x->chaves[i + 1] = chave;
         x->n++;
         return;
     }
     while (i >= 0 && chave < x->chaves[i]) {
-        contador_ops++;                      /* comparacao de chave */
+        contador_ops++; // comparacao
         i--;
     }
     contador_ops++;
@@ -92,8 +86,6 @@ void b_inserir(BArvore *bt, int chave) {
     }
 }
 
-/* ---------- remocao ---------- */
-
 static int chave_max(BNodo *x) {
     while (!x->folha) x = x->filhos[x->n];
     return x->chaves[x->n - 1];
@@ -105,7 +97,7 @@ static int chave_min(BNodo *x) {
 }
 
 static void fundir_filhos(BArvore *bt, BNodo *x, int i) {
-    contador_ops++;                          /* merge */
+    contador_ops++; // merge
     BNodo *L = x->filhos[i];
     BNodo *R = x->filhos[i + 1];
 
@@ -171,10 +163,10 @@ static void remover_rec(BArvore *bt, BNodo *x, int chave) {
     int t = bt->t;
     int i = 0;
     while (i < x->n && chave > x->chaves[i]) {
-        contador_ops++;                      /* comparacao de chave */
+        contador_ops++; // comparacao
         i++;
     }
-    contador_ops++;                          /* comparacao que encerrou o while */
+    contador_ops++; // comparacao final do while
 
     if (i < x->n && x->chaves[i] == chave) {
         if (x->folha) {
@@ -203,17 +195,14 @@ static void remover_rec(BArvore *bt, BNodo *x, int chave) {
 
 void b_remover(BArvore *bt, int chave) {
     if (!bt->raiz) return;
-    if (bt->raiz->n == 0 && bt->raiz->folha) return;   /* arvore vazia */
+    if (bt->raiz->n == 0 && bt->raiz->folha) return;
     remover_rec(bt, bt->raiz, chave);
-    /* colapsa raizes vazias ate ter uma com chaves ou ser folha */
     while (bt->raiz->n == 0 && !bt->raiz->folha) {
         BNodo *antigo = bt->raiz;
-        bt->raiz      = antigo->filhos[0];
+        bt->raiz = antigo->filhos[0];
         bn_liberar(antigo);
     }
 }
-
-/* ---------- busca ---------- */
 
 BNodo *b_buscar(BArvore *bt, BNodo *x, int chave) {
     int i = 0;
@@ -222,8 +211,6 @@ BNodo *b_buscar(BArvore *bt, BNodo *x, int chave) {
     if (x->folha) return NULL;
     return b_buscar(bt, x->filhos[i], chave);
 }
-
-/* ---------- impressao ---------- */
 
 void b_imprimir(BNodo *x, int nivel) {
     if (x == NULL) return;
@@ -235,8 +222,6 @@ void b_imprimir(BNodo *x, int nivel) {
     if (!x->folha)
         for (int i = 0; i <= x->n; i++) b_imprimir(x->filhos[i], nivel + 1);
 }
-
-/* ---------- liberacao ---------- */
 
 static void liberar_nos(BNodo *x) {
     if (!x->folha)

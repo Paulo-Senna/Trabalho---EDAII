@@ -8,10 +8,12 @@ typedef struct nodoAVL {
     int alt;
 } nodoAVL;
 
-int      altura      (nodoAVL *sub);
-nodoAVL *insereAVL   (int info, nodoAVL *arv);
-nodoAVL *removeAVL   (nodoAVL *raiz, int x);
-nodoAVL *buscaAVL    (nodoAVL *raiz, int x);
-void     imprimirAVL (nodoAVL *raiz, int nivel);
+int altura(nodoAVL *sub);
 
-#endif /* AVL_H */
+
+nodoAVL *insereAVL(int info, nodoAVL *arv);
+nodoAVL *removeAVL(nodoAVL *raiz, int x);
+nodoAVL *buscaAVL(nodoAVL *raiz, int x);
+void imprimirAVL(nodoAVL *raiz, int nivel);
+
+#endif

@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include "../include/arvores.h"
 
-/* Definicao do contador global usado por avl.c, rubro_negra.c e arv_b.c */
 long long contador_ops = 0;
 
-#define MAX_N       10000
-#define PASSO       100
-#define AMOSTRAS    10
+#define MAX_N 10000
+#define PASSO 100
+#define AMOSTRAS 10
 
-/* Chaves aleatorias: [amostra][indice] */
 static int chaves[AMOSTRAS][MAX_N];
 
 static void gerar_chaves(void) {
@@ -19,8 +17,6 @@ static void gerar_chaves(void) {
             chaves[s][i] = rand();
 }
 
-/* ----- medicao AVL ----- */
-
 static double medir_avl_insercao(int amostra, int n) {
     nodoAVL *raiz = NULL;
     long long total = 0;
@@ -29,7 +25,6 @@ static double medir_avl_insercao(int amostra, int n) {
         raiz = insereAVL(chaves[amostra][i], raiz);
         total += contador_ops;
     }
-    /* libera a arvore */
     for (int i = 0; i < n; i++) raiz = removeAVL(raiz, chaves[amostra][i]);
     return (double)total / n;
 }
@@ -45,8 +40,6 @@ static double medir_avl_remocao(int amostra, int n) {
     }
     return (double)total / n;
 }
-
-/* ----- medicao Rubro-Negra ----- */
 
 static double medir_rb_insercao(int amostra, int n) {
     RBTree *rb = rb_criar();
@@ -73,8 +66,6 @@ static double medir_rb_remocao(int amostra, int n) {
     return (double)total / n;
 }
 
-/* ----- medicao Arvore B ----- */
-
 static double medir_b_insercao(int amostra, int n, int t) {
     BArvore *bt = b_criar(t);
     long long total = 0;
@@ -100,7 +91,8 @@ static double medir_b_remocao(int amostra, int n, int t) {
     return (double)total / n;
 }
 
-/* ----- loop principal ----- */
+
+
 
 int main(void) {
     gerar_chaves();

@@ -3,23 +3,19 @@
 #include "../include/rubro_negra.h"
 #include "../include/arvores.h"
 
-/* ---------- criacao ---------- */
-
 RBTree *rb_criar() {
-    RBTree *t    = (RBTree *)malloc(sizeof(RBTree));
-    t->nil        = (RBNode *)malloc(sizeof(RBNode));
-    t->nil->cor   = PRETO;
-    t->nil->esq   = t->nil->dir = t->nil->pai = t->nil;
-    t->raiz       = t->nil;
+    RBTree *t = (RBTree *)malloc(sizeof(RBTree));
+    t->nil = (RBNode *)malloc(sizeof(RBNode));
+    t->nil->cor = PRETO;
+    t->nil->esq = t->nil->dir = t->nil->pai = t->nil;
+    t->raiz = t->nil;
     return t;
 }
 
-/* ---------- rotacoes (cada chamada = 1 op) ---------- */
-
 static void rotacionar_esq(RBTree *t, RBNode *x) {
-    contador_ops++;                          /* rotacao */
+    contador_ops++; // rotacao
     RBNode *y = x->dir;
-    x->dir    = y->esq;
+    x->dir = y->esq;
     if (y->esq != t->nil) y->esq->pai = x;
     y->pai = x->pai;
     if      (x->pai == t->nil)   t->raiz     = y;
@@ -30,7 +26,7 @@ static void rotacionar_esq(RBTree *t, RBNode *x) {
 }
 
 static void rotacionar_dir(RBTree *t, RBNode *x) {
-    contador_ops++;                          /* rotacao */
+    contador_ops++; // rotacao
     RBNode *y = x->esq;
     x->esq    = y->dir;
     if (y->dir != t->nil) y->dir->pai = x;
@@ -41,8 +37,6 @@ static void rotacionar_dir(RBTree *t, RBNode *x) {
     y->dir = x;
     x->pai = y;
 }
-
-/* ---------- insercao ---------- */
 
 static void inserir_fixup(RBTree *t, RBNode *z) {
     while (z->pai->cor == VERMELHO) {
@@ -79,14 +73,14 @@ static void inserir_fixup(RBTree *t, RBNode *z) {
 
 void rb_inserir(RBTree *t, int chave) {
     RBNode *z  = (RBNode *)malloc(sizeof(RBNode));
-    z->chave   = chave;
-    z->cor     = VERMELHO;
+    z->chave = chave;
+    z->cor = VERMELHO;
     z->esq = z->dir = z->pai = t->nil;
 
-    RBNode *y  = t->nil;
-    RBNode *x  = t->raiz;
+    RBNode *y = t->nil;
+    RBNode *x = t->raiz;
     while (x != t->nil) {
-        contador_ops++;                      /* comparacao de chave */
+        contador_ops++; // comparacao
         y = x;
         x = (z->chave < x->chave) ? x->esq : x->dir;
     }
@@ -97,8 +91,6 @@ void rb_inserir(RBTree *t, int chave) {
 
     inserir_fixup(t, z);
 }
-
-/* ---------- remocao ---------- */
 
 static void transplant(RBTree *t, RBNode *u, RBNode *v) {
     if      (u->pai == t->nil)   t->raiz     = v;
@@ -160,14 +152,14 @@ static void remover_fixup(RBTree *t, RBNode *x) {
 void rb_remover(RBTree *t, int chave) {
     RBNode *z = t->raiz;
     while (z != t->nil) {
-        contador_ops++;                      /* comparacao de chave */
+        contador_ops++; // comparacao
         if      (chave == z->chave) break;
         else if (chave < z->chave)  z = z->esq;
         else                        z = z->dir;
     }
     if (z == t->nil) return;
 
-    RBNode *y      = z;
+    RBNode *y = z;
     RBNode *x;
     int y_cor_orig = y->cor;
 
@@ -176,38 +168,34 @@ void rb_remover(RBTree *t, int chave) {
     } else if (z->dir == t->nil) {
         x = z->esq; transplant(t, z, z->esq);
     } else {
-        y          = minimo(t, z->dir);
+        y = minimo(t, z->dir);
         y_cor_orig = y->cor;
-        x          = y->dir;
+        x = y->dir;
         if (y->pai == z) {
             x->pai = y;
         } else {
             transplant(t, y, y->dir);
-            y->dir      = z->dir;
+            y->dir = z->dir;
             y->dir->pai = y;
         }
         transplant(t, z, y);
-        y->esq      = z->esq;
+        y->esq = z->esq;
         y->esq->pai = y;
-        y->cor      = z->cor;
+        y->cor = z->cor;
     }
     free(z);
     if (y_cor_orig == PRETO) remover_fixup(t, x);
 }
 
-/* ---------- busca ---------- */
-
 RBNode *rb_buscar(RBTree *t, int chave) {
     RBNode *x = t->raiz;
     while (x != t->nil) {
-        if      (chave == x->chave) return x;
+        if (chave == x->chave) return x;
         else if (chave < x->chave)  x = x->esq;
-        else                        x = x->dir;
+        else x = x->dir;
     }
     return NULL;
 }
-
-/* ---------- impressao ---------- */
 
 void rb_imprimir(RBTree *t, RBNode *x, int nivel) {
     if (x == t->nil) return;
@@ -217,8 +205,6 @@ void rb_imprimir(RBTree *t, RBNode *x, int nivel) {
     printf("%d(%c)", x->chave, x->cor == VERMELHO ? 'V' : 'P');
     rb_imprimir(t, x->esq, nivel + 1);
 }
-
-/* ---------- liberacao ---------- */
 
 static void liberar_nos(RBTree *t, RBNode *x) {
     if (x == t->nil) return;

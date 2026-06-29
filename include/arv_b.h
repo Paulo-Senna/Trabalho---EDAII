@@ -10,14 +10,14 @@ typedef struct BNodo {
 
 typedef struct BArvore {
     BNodo *raiz;
-    int    t;     /* grau minimo (ordem) */
+    int    t;     //grau minimo
 } BArvore;
 
-BArvore *b_criar    (int t);
-void     b_inserir  (BArvore *bt, int chave);
-void     b_remover  (BArvore *bt, int chave);
-BNodo   *b_buscar   (BArvore *bt, BNodo *x, int chave);
-void     b_imprimir (BNodo *x, int nivel);
-void     b_destruir (BArvore *bt);
+BArvore *b_criar(int t);
+void b_inserir(BArvore *bt, int chave);
+void b_remover(BArvore *bt, int chave);
+BNodo *b_buscar(BArvore *bt, BNodo *x, int chave);
+void b_imprimir(BNodo *x, int nivel);
+void b_destruir(BArvore *bt);
 
-#endif /* ARV_B_H */
+#endif
